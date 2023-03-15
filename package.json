@@ -2,9 +2,10 @@
   "name": "ignite-02-api-rest-nodejs",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "tsx --watch src/server.ts"
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,8 @@
   },
   "homepage": "https://github.com/Hugovarellaa/ignite-02-api-rest-nodejs#readme",
   "devDependencies": {
+    "@types/node": "^18.15.3",
+    "tsx": "^3.12.5",
     "typescript": "^4.9.5"
   },
   "dependencies": {
