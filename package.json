@@ -1,29 +1,32 @@
 {
-  "name": "ignite-02-api-rest-nodejs",
-  "version": "1.0.0",
-  "description": "",
-  "type": "module",
-  "main": "index.js",
-  "scripts": {
-    "dev": "tsx --watch src/server.ts"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Hugovarellaa/ignite-02-api-rest-nodejs.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Hugovarellaa/ignite-02-api-rest-nodejs/issues"
-  },
-  "homepage": "https://github.com/Hugovarellaa/ignite-02-api-rest-nodejs#readme",
-  "devDependencies": {
-    "@types/node": "^18.15.3",
-    "tsx": "^3.12.5",
-    "typescript": "^4.9.5"
-  },
-  "dependencies": {
-    "fastify": "^4.14.1"
-  }
+	"name": "ignite-02-api-rest-nodejs",
+	"version": "1.0.0",
+	"description": "",
+	"type": "module",
+	"main": "index.js",
+	"scripts": {
+		"dev": "tsx --watch src/server.ts",
+		"lint": "eslint src --ext .ts --fix"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Hugovarellaa/ignite-02-api-rest-nodejs.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/Hugovarellaa/ignite-02-api-rest-nodejs/issues"
+	},
+	"homepage": "https://github.com/Hugovarellaa/ignite-02-api-rest-nodejs#readme",
+	"devDependencies": {
+		"@rocketseat/eslint-config": "^1.2.0",
+		"@types/node": "^18.15.3",
+		"eslint": "^8.36.0",
+		"tsx": "^3.12.5",
+		"typescript": "^4.9.5"
+	},
+	"dependencies": {
+		"fastify": "^4.14.1"
+	}
 }
