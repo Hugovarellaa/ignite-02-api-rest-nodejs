@@ -2,9 +2,11 @@ import Fastify, { FastifyInstance } from 'fastify'
 import { env } from './env'
 import { transactionsRoutes } from './routes/transactions.routes'
 
-const server: FastifyInstance = Fastify({})
+const server: FastifyInstance = Fastify()
 
-server.register(transactionsRoutes)
+server.register(transactionsRoutes, {
+	prefix: 'transactions',
+})
 
 server
 	.listen({
