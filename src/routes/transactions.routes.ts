@@ -12,6 +12,20 @@ export async function transactionsRoutes(server: FastifyInstance) {
 		}
 	})
 
+	server.get('/:id', async (request, reply) => {
+		const getTransactionParamsSchema = z.object({
+			id: z.string().uuid(),
+		})
+
+		const { id } = getTransactionParamsSchema.parse(request.params)
+
+		const transaction = await knex('transactions').where('id', id).first()
+
+		return {
+			transaction,
+		}
+	})
+
 	server.post('/', async (request, reply) => {
 		const createTransactionBodySchema = z.object({
 			title: z.string(),
