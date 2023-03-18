@@ -1,5 +1,6 @@
+import { execSync } from 'node:child_process'
 import request from 'supertest'
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { app } from '../src/app'
 
 describe('Transactions Routes', async () => {
@@ -9,6 +10,11 @@ describe('Transactions Routes', async () => {
 
 	afterAll(async () => {
 		await app.close()
+	})
+
+	beforeEach(() => {
+		execSync('npm run knex migrate:rollback --all')
+		execSync('npm run knex migrate:latest')
 	})
 
 	it('should be able to create a new transaction', async () => {
@@ -21,7 +27,26 @@ describe('Transactions Routes', async () => {
 			})
 			.expect(201)
 	})
+
 	it('should be able to list all transactions', async () => {
+		const createTransactionResponse = await request(app.server).post('/transactions').send({
+			title: 'Title test',
+			amount: 3333,
+			type: 'credit',
+		})
+		const cookies = createTransactionResponse.get('Set-Cookie')
+
+		const listTransactionsResponse = await request(app.server).get('/transactions').set('Cookie', cookies).expect(200)
+
+		expect(listTransactionsResponse.body.transactions).toEqual([
+			expect.objectContaining({
+				title: 'Title test',
+				amount: 3333,
+			}),
+		])
+	})
+
+	it('should be able to get specific transaction', async () => {
 		const createTransactionResponse = await request(app.server).post('/transactions').send({
 			title: 'Title test',
 			amount: 3333,
@@ -31,11 +56,44 @@ describe('Transactions Routes', async () => {
 
 		const listTransactionsResponse = await request(app.server).get('/transactions').set('Cookie', cookies)
 
-		expect(listTransactionsResponse.body.transactions).toEqual([
+		const transactionId = listTransactionsResponse.body.transactions[0].id
+
+		const getTransactionsResponse = await request(app.server)
+			.get(`/transactions/${transactionId}`)
+			.set('Cookie', cookies)
+			.expect(200)
+
+		expect(getTransactionsResponse.body.transaction).toEqual(
 			expect.objectContaining({
 				title: 'Title test',
 				amount: 3333,
 			}),
-		])
+		)
+	})
+
+	it('should be able to get the summary', async () => {
+		const createTransactionResponse = await request(app.server).post('/transactions').send({
+			title: 'Title test',
+			amount: 5000,
+			type: 'credit',
+		})
+		const cookies = createTransactionResponse.get('Set-Cookie')
+
+		await request(app.server).post('/transactions').set('Cookie', cookies).send({
+			title: 'Title test',
+			amount: 2000,
+			type: 'debit',
+		})
+
+		const SummaryTransactionsResponse = await request(app.server)
+			.get('/transactions/summary')
+			.set('Cookie', cookies)
+			.expect(200)
+
+		expect(SummaryTransactionsResponse.body.summary).toEqual(
+			expect.objectContaining({
+				amount: 3000,
+			}),
+		)
 	})
 })
