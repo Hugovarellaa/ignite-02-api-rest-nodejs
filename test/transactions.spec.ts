@@ -1,5 +1,5 @@
 import request from 'supertest'
-import { afterAll, beforeAll, describe, test } from 'vitest'
+import { afterAll, beforeAll, describe, it } from 'vitest'
 import { app } from '../src/app'
 
 describe('Transactions Routes', async () => {
@@ -11,7 +11,7 @@ describe('Transactions Routes', async () => {
 		await app.close()
 	})
 
-	test('user can create a new transactions', async () => {
+	it('should be able to create a new transaction', async () => {
 		await request(app.server)
 			.post('/transactions')
 			.send({
