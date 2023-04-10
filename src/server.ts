@@ -1,11 +1,16 @@
-import fastify from 'fastify'
+import fastify from 'fastify';
+import { knex } from './database';
 
-const PORT = 3333
+const app = fastify();
 
-const app = fastify()
+app.get('/', async () => {
+	const testando = await knex('sqlite_schema').select('*');
+
+	return testando;
+});
 
 app
 	.listen({
-		port: PORT,
+		port: 3333,
 	})
-	.then(() => console.log(`🚀🚀 listening on port ${PORT}🚀🚀`))
+	.then(() => console.log(`🚀🚀 listening on port 3333 🚀🚀`));
