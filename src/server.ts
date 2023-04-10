@@ -6,6 +6,6 @@ const app = fastify();
 
 app
   .listen({
-    port: 3333,
+    port: PORT,
   })
-  .then(() => console.log("listening on port", PORT));
+  .then(() => console.log(`🚀🚀 listening on port ${PORT}🚀🚀`));
