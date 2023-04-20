@@ -2,6 +2,8 @@ import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../src/app';
 
+// Test E2E
+
 describe('Transaction Routes', () => {
 	beforeAll(async () => {
 		await app.ready();
@@ -11,13 +13,33 @@ describe('Transaction Routes', () => {
 		await app.close();
 	});
 
-	it('should be able to create a new transactions', async () => {
-		const response = await request(app.server).post('/transactions').send({
+	it('should be able to create a new transaction', async () => {
+		const createTransaction = await request(app.server).post('/transactions').send({
 			title: 'Transaction Test',
 			amount: 4000,
 			type: 'credit',
 		});
 
-		expect(response.statusCode).toBe(201);
+		expect(createTransaction.statusCode).toBe(201);
+	});
+
+	it('should be able to list all transactions', async () => {
+		const createTransaction = await request(app.server).post('/transactions').send({
+			title: 'Transaction Test',
+			amount: 4000,
+			type: 'credit',
+		});
+
+		const cookies = createTransaction.get('Set-Cookie');
+
+		const ListAllTransactions = await request(app.server).get('/transactions').set('Cookie', cookies);
+
+		expect(ListAllTransactions.statusCode).toBe(200);
+		expect(ListAllTransactions.body.transactions).toEqual([
+			expect.objectContaining({
+				title: 'Transaction Test',
+				amount: 4000,
+			}),
+		]);
 	});
 });
