@@ -9,15 +9,12 @@ describe('Transaction Routes', () => {
 	beforeAll(async () => {
 		await app.ready();
 	});
-
 	afterAll(async () => {
 		await app.close();
 	});
-
 	beforeEach(() => {
 		execSync('npm run knex -- migrate:latest');
 	});
-
 	afterEach(() => {
 		execSync('npm run knex -- migrate:rollback --all');
 	});
@@ -50,5 +47,29 @@ describe('Transaction Routes', () => {
 				amount: 4000,
 			}),
 		]);
+	});
+
+	it.only('should be able to get specific transaction', async () => {
+		const createTransaction = await request(app.server).post('/transactions').send({
+			title: 'Transaction Test',
+			amount: 4000,
+			type: 'credit',
+		});
+
+		const cookies = createTransaction.get('Set-Cookie');
+
+		const ListAllTransactions = await request(app.server).get('/transactions').set('Cookie', cookies);
+
+		const transactionsId = ListAllTransactions.body.transactions[0].id;
+
+		const getTransactionId = await request(app.server).get(`/transactions/${transactionsId}`).set('Cookie', cookies);
+
+		expect(getTransactionId.statusCode).toBe(200);
+		expect(getTransactionId.body.transaction).toEqual(
+			expect.objectContaining({
+				title: 'Transaction Test',
+				amount: 4000,
+			}),
+		);
 	});
 });
