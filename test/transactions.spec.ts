@@ -49,7 +49,7 @@ describe('Transaction Routes', () => {
 		]);
 	});
 
-	it.only('should be able to get specific transaction', async () => {
+	it('should be able to get specific transaction', async () => {
 		const createTransaction = await request(app.server).post('/transactions').send({
 			title: 'Transaction Test',
 			amount: 4000,
@@ -71,5 +71,28 @@ describe('Transaction Routes', () => {
 				amount: 4000,
 			}),
 		);
+	});
+
+	it('should be able to get the summary', async () => {
+		const createTransaction = await request(app.server).post('/transactions').send({
+			title: 'Transaction credit',
+			amount: 4000,
+			type: 'credit',
+		});
+
+		const cookies = createTransaction.get('Set-Cookie');
+
+		await request(app.server).post('/transactions').set('Cookie', cookies).send({
+			title: 'Transaction debit',
+			amount: 1000,
+			type: 'debit',
+		});
+
+		const summaryResponse = await request(app.server).get('/transactions/summary').set('Cookie', cookies);
+
+		expect(summaryResponse.statusCode).toBe(200);
+		expect(summaryResponse.body.summary).toEqual({
+			amount: 3000,
+		});
 	});
 });
