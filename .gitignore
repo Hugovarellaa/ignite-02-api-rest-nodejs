@@ -11,3 +11,6 @@ database/*.db
 
 # Build
 build
+
+# Anotações
+notes.md
