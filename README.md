@@ -67,7 +67,7 @@ $ yarn knex -- migrate:latest
 # Inicie o Projeto
 $ npm run dev
 ou
-$ yarn
+$ yarn dev
 ```
 
 ---
